@@ -27,7 +27,7 @@ def get_telco_data(sql_query = "SELECT customer_id, monthly_charges, tenure, tot
 
     return pd.read_sql(sql_query, get_db_url('telco_churn'))
 
-################ wrangle telco data
+################ wrangle telco data ################
 def wrangle_telco():
     # get dataframe using get_telco_data function
     df = get_telco_data()
@@ -36,4 +36,27 @@ def wrangle_telco():
     return df
 
     
+################## get zillow data ##################
+def get_zillow_data():
+    '''
+    This function reads in Zillow data from Codeup database, writes data to
+    a csv file if a local file does not exist, and returns a df.
+    '''
+    sql_query = ''' SELECT bedroomcnt, bathroomcnt, calculatedfinishedsquarefeet, taxvaluedollarcnt, yearbuilt, taxamount, fips
+    FROM properties_2017
+    WHERE propertylandusetypeid = 261;
+    '''
+    if os.path.isfile('zillow_data.csv'):
+        
+        # If csv file exists read in data from csv file.
+        df = pd.read_csv('zillow_data.csv', index_col=0)
+        
+    else:
+        
+        # Read fresh data from db into a DataFrame
+        df = pd.read_sql(sql_query, get_db_url('zillow'))
+        
+        # Cache data
+        df.to_csv('zillow_data.csv')
 
+    return df
