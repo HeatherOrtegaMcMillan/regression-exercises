@@ -1,11 +1,12 @@
-acquire.py
 
-###### Imports ######
+################ Imports ################
 import pandas as pd
 import numpy as np
 from env import host, password, user
 import os
 
+
+###################### Getting database Url ################
 def get_db_url(db_name, user=user, host=host, password=password):
     """
         This helper function takes as default the user host and password from the env file.
@@ -14,24 +15,12 @@ def get_db_url(db_name, user=user, host=host, password=password):
     url = f'mysql+pymysql://{user}:{password}@{host}/{db_name}'
     return url
 
-def get_telco_data():
+
+################ Getting appropriate telco data ################
+def get_telco_data(sql_query):
     '''
-    This function reads data from the Codeup db into a df. Query is long to customize columns being pulled over.
+    this function takes in a sql query (assign it to a variable) to get data from the  telco_churn database.
+    ex: query = query = SELECT customer_id, monthly_charges, tenure, total_charges FROM customers
     '''
-    sql_query = """ 
-        SELECT 
-            customer_id, churn, gender, senior_citizen, partner, dependents,
-            tenure, phone_service, multiple_lines,
-            online_security, online_backup, device_protection, tech_support,
-            streaming_tv, streaming_movies,
-            paperless_billing, monthly_charges, total_charges,
-      	    it.internet_service_type_id AS 'internet_service_type_id', internet_service_type,
-            ct.contract_type_id AS 'contract_type_id', contract_type,
-            pt.payment_type_id AS 'payment_type_id', payment_type
-        FROM customers AS c
-        JOIN internet_service_types AS it ON it.internet_service_type_id = c.`internet_service_type_id`
-        JOIN contract_types AS ct ON ct.`contract_type_id` = c.contract_type_id
-        JOIN payment_types AS pt ON pt.payment_type_id = c.payment_type_id;
-        """
     return pd.read_sql(sql_query, get_db_url('telco_churn'))
     
