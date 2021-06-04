@@ -7,6 +7,7 @@ import numpy as np
 from env import host, password, user
 import os
 
+from sklearn.model_selection import train_test_split
 
 ###################### Getting database Url ################
 def get_db_url(db_name, user=user, host=host, password=password):
@@ -26,6 +27,23 @@ def get_telco_data(sql_query = "SELECT customer_id, monthly_charges, tenure, tot
     '''
 
     return pd.read_sql(sql_query, get_db_url('telco_churn'))
+
+################ train test split helper function ################
+def banana_split(df):
+    '''
+    args: df
+    This function take in the telco_churn data data acquired by aquire.py, get_telco_data(),
+    performs a split.
+    Returns train, validate, and test dfs.
+    '''
+    train_validate, test = train_test_split(df, test_size=.2, 
+                                        random_state=713)
+    train, validate = train_test_split(train_validate, test_size=.3, 
+                                   random_state=713)
+    print(f'train --> {train.shape}')
+    print(f'validate --> {validate.shape}')
+    print(f'test --> {test.shape}')
+    return train, validate, test
 
 ################ wrangle telco data ################
 def wrangle_telco():
@@ -60,3 +78,5 @@ def get_zillow_data():
         df.to_csv('zillow_data.csv')
 
     return df
+
+
