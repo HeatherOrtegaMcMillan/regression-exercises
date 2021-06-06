@@ -80,3 +80,29 @@ def get_zillow_data():
     return df
 
 
+def handle_NaNs(df):
+    '''
+    This function handles the NaN values for the Zillow data (could be used for other dataframes). 
+    Takes in a dataframe and returns a dataframe with the unneeded rows dropped.
+    '''
+    # drop the duplicated rows
+    df = df.drop_duplicates(keep = 'first')
+    
+    # drop any rows that have NaN values
+    df = df.drop(df[df.isna().any(axis=1)].index)
+    
+    return df
+
+
+def wrangle_zillow():
+    '''
+    This function handels getting the data from the zillow database and getting rid of the unneeded rows.
+    It returns the dataframe ready to work with.
+    Uses other helper functions in wrangle.py to get this done. 
+    '''
+
+    df = get_zillow_data()
+
+    df = handle_NaNs(df)
+
+    return df
