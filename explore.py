@@ -4,6 +4,18 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from itertools import combinations
 
+############################## months to years ##############################
+
+def months_to_years(df, col_with_months = 'tenure'):
+    '''
+    This function takes in a dataframe and a column you want to change from months to years. Default column is tenure
+    Bins for years are 0-11 = 0, 12-23 = 1, 24-35= 2, ...
+    '''
+    
+    df['tenure_years'] = df[col_with_months] // 12
+    
+    return df
+
 
 ############################## plotting variable pairs for continous vars ############################# 
 
@@ -35,8 +47,9 @@ def plot_variable_pairs(df, cont_vars, dot_color = 'tab:blue', line_color = 'ora
 
 ############################## plot the cat and continous variables ##############################
 
-def plot_cat_and_cont(cat_vars, cont_vars):
+def plot_cat_and_cont(df, cat_vars, cont_vars):
     '''
+    df = dataframe you're graphing
     This function takes in a list of categorical variables and continous variable and plots a swarm plot, box plot, and violin plot for each pair
     '''
     # multiply length of continuous variables and length of categorical variables. This is the amount of rows in subplot, and helps set figsize to be tall enough
@@ -56,13 +69,13 @@ def plot_cat_and_cont(cat_vars, cont_vars):
             
             # plot all three plots (can change which ones you would like to use here)
             # [row] is the row number we're on, [0] is left most graph in subplot
-            sns.swarmplot(x=cat, y=cont, data=train, ax = axes[row][0])
+            sns.swarmplot(x=cat, y=cont, data=df, ax = axes[row][0])
             axes[row][0].set_title(f'{cat} and {cont}')
             
-            sns.boxplot(x=cat, y=cont, data=train, ax = axes[row][1])
+            sns.boxplot(x=cat, y=cont, data=df, ax = axes[row][1])
             axes[row][1].set_title(f'{cat} and {cont}')
             
-            sns.violinplot(x = cat, y = cont, data =train, ax = axes[row][2])
+            sns.violinplot(x = cat, y = cont, data =df, ax = axes[row][2])
             axes[row][2].set_title(f'{cat} and {cont}')
         
             # add one to row to move to next row for the next round
