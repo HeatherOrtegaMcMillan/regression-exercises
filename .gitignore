@@ -4,3 +4,5 @@ env.py
 __pycache__
 *.csv
 wrangle_lesson.ipynb
+
+*.sql
