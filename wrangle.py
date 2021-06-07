@@ -20,7 +20,7 @@ def get_db_url(db_name, user=user, host=host, password=password):
 
 
 ################ Getting appropriate telco data ################
-def get_telco_data(sql_query = "SELECT customer_id, monthly_charges, tenure, total_charges FROM customers"):
+def get_telco_data(sql_query = "SELECT customer_id, monthly_charges, tenure, total_charges FROM customers WHERE `contract_type_id` = 3"):
     '''
     this function takes in a sql query (assign it to a variable) to get data from the  telco_churn database.
     ex (also default query): query = SELECT customer_id, monthly_charges, tenure, total_charges FROM customers
@@ -45,6 +45,8 @@ def banana_split(df):
     print(f'test --> {test.shape}')
     return train, validate, test
 
+
+
 ################ wrangle telco data ################
 def wrangle_telco():
     # get dataframe using get_telco_data function
@@ -53,8 +55,62 @@ def wrangle_telco():
     df['total_charges'] = df['total_charges'].str.replace(' ', '0').astype('float')
     return df
 
+
+
+
+################ Scaler helper function ################
+def my_scaler(train, validate, test, col_names, scaler, scaler_name):
     
-################## get zillow data ##################
+    '''
+    This function takes in the train validate and test dataframes, columns you want to scale (as a list), a scaler (i.e. MinMaxScaler(), with whatever paramaters you need),
+    scaler_name as a string.
+    col_names: list of columns to scale
+    Scaler_name, should be what you want in the name of your new dataframe columns.
+    Adds columns to the train validate and test dataframes. 
+    Outputs scaler for doing inverse transforms.
+    Ouputs a list of the new column names (what you can use to create the X_train).
+    
+    example: min_max_scaler, scaled_cols_list = my_scaler(train, validate, test, MinMaxScaler(), 'scaled_min_max')
+    
+    '''
+    
+    #create the scaler (input here should be minmax scaler)
+    mm_scaler = scaler
+    
+    # make empty list for return
+    scaled_cols_list = []
+    
+    # loop through columns in col names
+    for col in col_names:
+        
+        #fit and transform to train, add to new column on train df
+        train[f'{col}_{scaler_name}'] = mm_scaler.fit_transform(train[[col]]) 
+        
+        #df['col'].values.reshape(-1, 1)
+        
+        #transform cols from validate and test (only fit on train)
+        validate[f'{col}_{scaler_name}']= mm_scaler.transform(validate[[col]])
+        test[f'{col}_{scaler_name}']= mm_scaler.transform(test[[col]])
+        
+        #add new column name to the list that will get returned
+        scaled_cols_list.append(f'{col}_{scaler_name}')
+    
+    #confirmation print
+    print('Your scaled columns have been added to your train validate and test dataframes.')
+    
+    #returns scaler, and a list of column names that can be used in X_train, X_validate and X_test.
+    return scaler, scaled_cols_list   
+
+    
+
+
+
+
+
+
+
+    
+#################################### get ZILLOW data ####################################
 def get_zillow_data():
     '''
     This function reads in Zillow data from Codeup database, writes data to
@@ -106,3 +162,6 @@ def wrangle_zillow():
     df = handle_NaNs(df)
 
     return df
+
+
+
