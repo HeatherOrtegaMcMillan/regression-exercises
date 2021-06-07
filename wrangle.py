@@ -26,7 +26,16 @@ def get_telco_data(sql_query = "SELECT customer_id, monthly_charges, tenure, tot
     ex (also default query): query = SELECT customer_id, monthly_charges, tenure, total_charges FROM customers
     '''
 
-    return pd.read_sql(sql_query, get_db_url('telco_churn'))
+    return pd.read_sql(sql_query, get_db_url('telco_churn'))\
+
+
+######################### get generic data #########################
+def get_any_data(database, sql_query):
+    '''
+    put in the query and the database and get the data you need in a dataframe
+    '''
+
+    return pd.read_sql(sql_query, get_db_url(database))
 
 ################ train test split helper function ################
 def banana_split(df):
