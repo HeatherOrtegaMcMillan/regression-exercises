@@ -110,3 +110,42 @@ def better_than_baseline(y, yhat):
     # if Root mean Square error for the model is larger or the same as the baseline, return False 
     else:
         return False
+
+################################################################################################
+
+def select_kbest(X, y, k, score_func=f_regression):
+    '''
+    takes in the predictors (X), the target (y), and the number of features to select (k) 
+    and returns the names (in a list) of the top k selected features based on the SelectKBest class
+    Optional arg: score_func. Default is f_regression. other options ex: f_classif 
+    '''
+    # create selector
+    f_selector = SelectKBest(score_func=score_func, k=k)
+    
+    #fit to X and y
+    f_selector.fit(X, y)
+    
+    # return the list of the column names that are the top k selected features
+    return list(X.columns[f_selector.get_support()])
+
+
+################################################################################################
+
+def rfe(X, y, n, estimator=LinearRegression()):
+    '''
+    takes in the predictors (X), the target (y), and the number of features to select (n) 
+    and returns the names (in a list) of the top k selected features based on the Recursive Feature Elimination class
+    Optional arg: estimator. Default is LinearRegression()
+    '''
+    # use the estimator model to create estimator
+    est = estimator
+    
+    # set up with estimator and n_features
+    rfe = RFE(estimator=est, n_features_to_select=n)
+    
+    # fit to X and y
+    rfe.fit(X, y)
+    
+    # return the list of the columns 
+    
+    return list(X.columns[rfe.support_])
