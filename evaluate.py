@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.linear_model import LinearRegression
+from sklearn.feature_selection import SelectKBest, f_regression, RFE
+
 ################################################################################################
 def sse_compare(sse1, sse2, model1, model2 = 'baseline'):
     '''
@@ -149,3 +153,37 @@ def rfe(X, y, n, estimator=LinearRegression()):
     # return the list of the columns 
     
     return list(X.columns[rfe.support_])
+
+################################################################################################
+
+# maybe in the future add creating the preditions and the residuals if none were entered 
+# have to import sklearn stuff
+
+def plot_the_dots(actuals, predictions, residuals):
+    '''
+    This function takes in the actuals (i.e. df.actuals), predictions, and residuals and outputs two graphs.
+    One to see the regression line and the actuals/predictions
+    One to see the actuals vs the residuals.
+    '''
+    
+    r_sq = r2_score(actuals, predictions)
+    rmse = mean_squared_error(actuals, predictions, squared = True)
+    
+    text_loc = actuals.max() - 2
+    
+    # plots actual vs predicted
+    plt.figure(figsize=(16, 7))
+    ax = plt.subplot(1, 2, 1)
+    ax.scatter(actuals, predictions, label='predicted')
+    ax.set(title='Actual vs Predicted Value', ylabel='Prediction', xlabel='Actual')
+    ax.plot(actuals, actuals, ls=':', c='gray')
+    ax.text(text_loc, 1, f'R^2: {r_sq:.2f}', fontsize='large')
+    
+    #put r^2 value on graph
+    # and rmse and rmse of baseline
+    
+    ax = plt.subplot(1, 2, 2)
+    ax.scatter(actuals, residuals)
+    ax.set(title = 'Actual vs Residual',ylabel='Residual', xlabel='Actual')
+    ax.hlines(0, *ax.get_xlim(), ls=':', color='gray')
+    ax.text(text_loc, -3, f'RMSE: {rmse:.2f}')
