@@ -111,14 +111,6 @@ def my_scaler(train, validate, test, col_names, scaler, scaler_name):
     return scaler, scaled_cols_list   
 
     
-
-
-
-
-
-
-
-    
 #################################### get ZILLOW data ####################################
 def get_zillow_data():
     '''
