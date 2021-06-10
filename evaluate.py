@@ -167,7 +167,7 @@ def plot_the_dots(actuals, predictions, residuals):
     '''
     
     r_sq = r2_score(actuals, predictions)
-    rmse = mean_squared_error(actuals, predictions, squared = True)
+    rmse = mean_squared_error(actuals, predictions, squared = False)
     
     text_loc = actuals.max() - 2
     
